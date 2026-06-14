@@ -1,0 +1,59 @@
+{
+  "width": 1920,
+  "height": 1080,
+  "fonts": {
+    "question": {
+      "path": "assets/fonts/MalgunGothic-Bold.ttf",
+      "size": 140
+    },
+    "option": {
+      "path": "assets/fonts/Arial.ttf",
+      "size": 64
+    }
+  },
+  "colors": {
+    "bg": "#0f0817",
+    "text": "#ffffff",
+    "option_border": "#ffffff",
+    "highlight": "#38bdf8",
+    "progress_bg": "#ffffff59",
+    "progress_fill": "#38bdf8"
+  },
+  "coordinates": {
+    "question": {
+      "x": "center",
+      "y": 220
+    },
+    "option1": {
+      "x": 635,
+      "y": 520,
+      "w": 650,
+      "h": 140,
+      "radius": 20,
+      "text_offset_x": 50,
+      "text_offset_y": -8
+    },
+    "option2": {
+      "x": 635,
+      "y": 700,
+      "w": 650,
+      "h": 140,
+      "radius": 20,
+      "text_offset_x": 50,
+      "text_offset_y": -8
+    },
+    "answer_highlight": {
+      "outline_width": 5
+    },
+    "progress_bar": {
+      "x": 650,
+      "y": 900,
+      "w": 620,
+      "h": 12,
+      "radius": 6,
+      "fill_ratio_question": 0.0,
+      "fill_ratio_answer": 1.0
+    }
+  }
+}
+

@@ -1,0 +1,97 @@
+{
+  "width": 1080,
+  "height": 1920,
+  "fonts": {
+    "brand": {
+      "path": "assets/fonts/MalgunGothic-Bold.ttf",
+      "size": 46
+    },
+    "counter": {
+      "path": "assets/fonts/MalgunGothic-Bold.ttf",
+      "size": 70
+    },
+    "question": {
+      "path": "assets/fonts/MalgunGothic-Bold.ttf",
+      "size": 70
+    },
+    "word": {
+      "path": "assets/fonts/MalgunGothic-Bold.ttf",
+      "size": 180
+    },
+    "transcription": {
+      "path": "assets/fonts/MalgunGothic-Bold.ttf",
+      "size": 60
+    },
+    "option": {
+      "path": "assets/fonts/MalgunGothic-Bold.ttf",
+      "size": 64
+    }
+  },
+  "colors": {
+    "bg": "#0f0817",
+    "brand_text": "#aaaaaa",
+    "counter_text": "#a0a0a0",
+    "text": "#ffffff",
+    "transcription_text": "#c0c0c0",
+    "option_border": "#ffffff",
+    "progress_bg": "#ffffff59",
+    "progress_fill": "#38bdf8"
+  },
+  "coordinates": {
+    "brand": {
+      "x": "center",
+      "y": 80,
+      "text": "@KOREANQUIZEN"
+    },
+    "counter": {
+      "x": "center",
+      "align": "center"
+    },
+    "question": {
+      "max_width": 600,
+      "line_spacing": 1.3
+    },
+    "word": {
+      "x": "center"
+    },
+    "transcription": {
+      "x": "center"
+    },
+    "option1": {
+      "x": 240,
+      "w": 600,
+      "h": 150,
+      "radius": 20,
+      "text_offset_x": 50,
+      "text_offset_y": -10
+    },
+    "option2": {
+      "x": 240,
+      "w": 600,
+      "h": 150,
+      "radius": 20,
+      "text_offset_x": 50,
+      "text_offset_y": -10
+    },
+    "answer_highlight": {
+      "outline_width": 6
+    },
+    "progress_bar": {
+      "x": 100,
+      "y": 1800,
+      "w": 880,
+      "h": 12,
+      "radius": 6,
+      "fill_ratio_question": 0.0,
+      "fill_ratio_answer": 1.0
+    }
+  },
+  "gaps": {
+    "brand_to_counter": 130,
+    "counter_to_question": 130,
+    "question_to_word": 40,
+    "word_to_transcription": 90,
+    "transcription_to_options": 130,
+    "options_gap": 60
+  }
+}
