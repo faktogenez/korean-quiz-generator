@@ -10,16 +10,14 @@ async def main():
     blueprint = QuizEngine.create_blueprint(words_base)
     audio_loader = AudioLoader()
     
-    for item in blueprint:
-        # Генерируем части вопроса отдельно
+    for i, item in enumerate(blueprint):
         path_q_en = await audio_loader.get_audio(item["q_phrase_en"], "en-US-GuyNeural")
         path_q_ko = await audio_loader.get_audio(item["korean"], "ko-KR-InJoonNeural")
         
-        # Склеиваем аудио вопроса (фраза EN + слово KO)
-        item["audio_question_path"] = "temp_q.mp3"
+        # Уникальное имя для каждой карточки
+        item["audio_question_path"] = f"temp_q_{i}.mp3"
         concatenate_audioclips([AudioFileClip(path_q_en), AudioFileClip(path_q_ko)]).write_audiofile(item["audio_question_path"])
         
-        # Ответ озвучиваем только на английском
         item["audio_answer_path"] = await audio_loader.get_audio(item["a_phrase_en"], "en-US-GuyNeural")
         
         item["duration_en"] = AudioFileClip(item["audio_question_path"]).duration

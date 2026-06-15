@@ -13,6 +13,7 @@ class QuizEngine:
 
         for i, card in enumerate(words_base):
             correct_trans = card.translation
+            # Всегда ровно 2 варианта
             options = [correct_trans, random.choice([t for t in all_trans if t != correct_trans] or ["Wrong"])]
             correct_index = 0
             if random.random() > 0.5:
@@ -23,8 +24,8 @@ class QuizEngine:
                 "progress_text": f"{i+1} / {len(words_base)}",
                 "korean": card.word,
                 "transcription": card.transcription,
-                "q_phrase": random.choice(QuizEngine.TEMPLATES["question"]),
-                "a_phrase": random.choice(QuizEngine.TEMPLATES["answer"]).format(answer=correct_trans),
+                "q_phrase_en": random.choice(QuizEngine.TEMPLATES["question"]),
+                "a_phrase_en": random.choice(QuizEngine.TEMPLATES["answer"]).format(answer=correct_trans),
                 "options": options,
                 "correct_index": correct_index
             })
