@@ -31,7 +31,11 @@ class MoviePyRenderer:
             clip_q = clip_q.set_audio(CompositeAudioClip([audio_q, sfx_timer]))
             
             audio_a = AudioFileClip(item['audio_answer_path'])
-            audio_a_seq = concatenate_audioclips([AudioFileClip("assets/ding.mp3"), audio_a])
+            
+            if item.get('is_last', False):
+                audio_a_seq = audio_a
+            else:
+                audio_a_seq = concatenate_audioclips([AudioFileClip("assets/ding.mp3"), audio_a])
             
             clip_a = ImageClip(np.array(self.animator.draw_card(item, is_answer=True, correct_idx=item['correct_index'])))
             clip_a = clip_a.set_duration(audio_a_seq.duration)
