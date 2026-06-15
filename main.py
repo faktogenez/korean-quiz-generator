@@ -14,15 +14,12 @@ async def main():
     
     print("[1/2] Генерация/Проверка озвучки...")
     for i, item in enumerate(blueprint):
-        # Озвучиваем английскую фразу (Голос Guy) и корейское слово (Голос InJoon)
         path_q_en = await audio_loader.get_audio(item["q_phrase_en"], "en-US-GuyNeural")
         path_q_ko = await audio_loader.get_audio(item["korean"], "ko-KR-InJoonNeural")
         
-        # Генерируем уникальные имена для сшитых аудиофайлов вопросов
         item["audio_question_path"] = f"temp_q_{i}.mp3"
         concatenate_audioclips([AudioFileClip(path_q_en), AudioFileClip(path_q_ko)]).write_audiofile(item["audio_question_path"])
         
-        # Озвучиваем фразу ответа на английском языке (Голос Guy)
         item["audio_answer_path"] = await audio_loader.get_audio(item["a_phrase_en"], "en-US-GuyNeural")
         
         item["duration_en"] = AudioFileClip(item["audio_question_path"]).duration
