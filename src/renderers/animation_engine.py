@@ -10,7 +10,11 @@ class AnimationEngine:
     def draw_card(self, item, is_answer=False, correct_idx=None, timer_progress=0.0):
         t = self.template
         width, height = t['width'], t['height']
-        img = Image.new('RGB', (width, height), color=t['colors']['bg'])
+        
+        # Динамически берем случайный фон карточки, если он передан в item
+        bg_color = item.get('custom_bg', t['colors']['bg'])
+        
+        img = Image.new('RGB', (width, height), color=bg_color)
         draw = ImageDraw.Draw(img)
 
         # 1. Заголовок и Счетчик карточек
