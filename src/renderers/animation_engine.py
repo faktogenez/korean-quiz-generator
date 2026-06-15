@@ -32,9 +32,17 @@ class AnimationEngine:
         draw.text((width // 2, layout['y_phrase']), item['q_phrase_en'], 
                   fill=colors['text_phrase'], anchor="mm", font=self._get_font(typo['size_phrase']))
 
-        # 3. Слово на корейском и транскрипция
-        draw.text((width // 2, layout['y_korean']), item['korean'], 
-                  fill=colors['text_korean'], anchor="mm", font=self._get_font(typo['size_korean']))
+        # 3. Слово на корейском (С ОБВОДКОЙ) и транскрипция
+        # Добавлены параметры stroke_width и stroke_fill, берущие значения из конфига
+        draw.text(
+            (width // 2, layout['y_korean']), 
+            item['korean'], 
+            fill=colors['text_korean'], 
+            anchor="mm", 
+            font=self._get_font(typo['size_korean']),
+            stroke_width=layout.get('korean_stroke_width', 0),
+            stroke_fill=colors.get('text_korean_stroke', "#000000")
+        )
         
         draw.text((width // 2, layout['y_transcription']), f"[{item['transcription']}]", 
                   fill=colors['text_transcription'], anchor="mm", font=self._get_font(typo['size_transcription']))
@@ -55,8 +63,6 @@ class AnimationEngine:
         
         for i, opt in enumerate(item['options']):
             y = opt_cfg['y_start'] + (i * opt_cfg['y_space'])
-            
-            # Логика: красим в правильный цвет, если это фаза ответа И индекс совпадает
             is_correct = is_answer and (i == correct_idx) and not item.get('is_last', False)
             fill_color = colors['option_correct_bg'] if is_correct else None
             
@@ -77,7 +83,6 @@ class AnimationEngine:
 
     def save_test_preview(self, item, filename="test_card_preview.png"):
         """Метод для мгновенного сохранения одной тестовой карточки в формате PNG"""
-        # ТЕПЕРЬ ПРОВЕРЯЕМ ЦВЕТ ОТВЕТА: передаем is_answer=True и правильный индекс варианта
         img = self.draw_card(item, is_answer=True, correct_idx=item['correct_index'], timer_progress=1.0)
         img.save(filename)
         print(f"[Успех] Тестовый кадр с подсветкой ответа сохранен в файл: {filename}")

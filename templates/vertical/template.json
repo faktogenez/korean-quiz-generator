@@ -7,44 +7,54 @@
     "width": 1080,
     "height": 1920
   },
+  "background_palette": [
+    "#1e1e2e",
+    "#2a3439",
+    "#1c2a38",
+    "#142d2a",
+    "#2d1a29",
+    "#25182e"
+  ],
   "colors": {
-    "text_watermark": "#aaaaaa",
-    "text_progress": "#a0a0a0",
+    "text_watermark": "#c0c0c0",
+    "text_progress": "#c0c0c0",
     "text_phrase": "#ffffff",
-    "text_korean": "#ffffff",
+    "text_korean": "#f8fafc",
+    "text_korean_stroke": "#0f172a",
     "text_transcription": "#c0c0c0",
     "text_option": "#ffffff",
     "timer_background": "#ffffff59",
     "timer_fill": "#38bdf8",
     "option_border": "#ffffff",
-    "option_correct_bg": "#14532d"
+    "option_correct_bg": "#16a34a"
   },
   "typography": {
-    "size_watermark": 46,
+    "size_watermark": 36,
     "size_progress": 70,
     "size_phrase": 60,
-    "size_korean": 180,
+    "size_korean": 200,
     "size_transcription": 60,
-    "size_option": 64
+    "size_option": 74
   },
   "layout": {
-    "y_watermark": 1700,
+    "y_watermark": 1800,
     "y_progress": 200,
     "y_phrase": 350,
-    "y_korean": 600,
-    "y_transcription": 780,
+    "y_korean": 550,
+    "korean_stroke_width": 6,
+    "y_transcription": 730,
     "timer": {
-      "y": 925,
+      "y": 875,
       "width": 600,
       "height": 30
     },
     "options": {
-      "y_start": 1050,
-      "y_space": 220,
+      "y_start": 1000,
+      "y_space": 200,
       "width": 600,
       "height": 150,
       "text_offset_x": 50,
-      "text_offset_y": 25,
+      "text_offset_y": 18,
       "border_width": 5
     }
   }

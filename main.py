@@ -16,8 +16,8 @@ TEST_MODE = True
 
 async def main():
     words_base = DataProvider.load("data/vocabulary.json")
-    blueprint = QuizEngine.create_blueprint(words_base)
-    
+# Измени эту строчку в файле main.py (она находится в районе 16-й строки)
+    blueprint = QuizEngine.create_blueprint(words_base, "templates/vertical/template.json")    
     if TEST_MODE:
         print("=== РЕЖИМ ТЕСТИРОВАНИЯ ВЕРСТКИ ===")
         with open("templates/vertical/template.json", 'r', encoding='utf-8') as f:
