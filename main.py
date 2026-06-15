@@ -1,3 +1,5 @@
+import os
+import glob
 import asyncio
 import json
 from src.services.data_provider import DataProvider
@@ -7,33 +9,57 @@ from src.renderers.moviepy_renderer import MoviePyRenderer
 from src.renderers.animation_engine import AnimationEngine
 from moviepy.editor import concatenate_audioclips, AudioFileClip
 
-# ==========================================
-# РЕЖИМ ПРОВЕРКИ КАРТИНКИ (ВЕРСТКИ)
-# True — только картинка-превью с подсвеченным правильным ответом.
-# False — сборка полноценного видео.
-TEST_MODE = True 
-# ==========================================
+# =====================================================================
+# РЕЖИМЫ НАСТРОЙКИ И ТЕСТИРОВАНИЯ (Управляй проектом здесь)
+# =====================================================================
+MODE_LAYOUT_TEST = True
+MODE_FAST_VIDEO_TEST = False    
+# =====================================================================
+
+def auto_clean():
+    """Автоматическое удаление временных файлов озвучки"""
+    print("[Очистка] Удаляю временные аудиофайлы вопросов...")
+    temp_files = glob.glob("temp_q_*.mp3")
+    for f in temp_files:
+        try:
+            os.remove(f)
+        except Exception:
+            pass
+    print("[Очистка] Проект чист!")
 
 async def main():
+    # 1. Загрузка основной базы данных слов
     words_base = DataProvider.load("data/vocabulary.json")
-# Измени эту строчку в файле main.py (она находится в районе 16-й строки)
-    blueprint = QuizEngine.create_blueprint(words_base, "templates/vertical/template.json")    
-    if TEST_MODE:
-        print("=== РЕЖИМ ТЕСТИРОВАНИЯ ВЕРСТКИ ===")
+    if not words_base:
+        print("[Ошибка] База слов пуста или не найдена!")
+        return
+
+    # 2. Применение лайфхака для быстрого теста анимации знака вопроса
+    if MODE_FAST_VIDEO_TEST and not MODE_LAYOUT_TEST:
+        print("💡 [Лайфхак] Включен быстрый тест видео. Берем только последний слайд квиза...")
+        words_base = [words_base[-1]]
+
+    # 3. Генерация плана (blueprint) для карточек
+    blueprint = QuizEngine.create_blueprint(words_base, "templates/vertical/template.json")
+    
+    # 4. РЕЖИМ 1: Тестирование верстки (Генерация картинки-превью)
+    if MODE_LAYOUT_TEST:
+        print("=== [ТЕСТ] РЕЖИМ ПРОВЕРКИ ВЕРСТКИ ===")
         with open("templates/vertical/template.json", 'r', encoding='utf-8') as f:
             template = json.load(f)
             
         animator = AnimationEngine(template)
-        # Для теста берем первую карточку (она гарантированно подсветит верный ответ)
-        test_item = blueprint[0]
+        # Всегда берем последнюю карточку, чтобы сразу видеть настроенный знак вопроса "?"
+        test_item = blueprint[-1] 
         animator.save_test_preview(test_item, "test_card_preview.png")
-        print("=== ТЕСТ ЗАВЕРШЕН, ВИДЕО НЕ СБИРАЛОСЬ ===")
+        print("=== [ТЕСТ] КАРТИНКА ПРЕВЬЮ УСПЕШНО СОЗДАНА ===")
         return
 
-    print("=== ЗАПУСК ПОЛНОГО КОНВЕЙЕРА (DATA -> AUDIO -> VIDEO) ===")
+    # 5. РЕЖИМ 2: Сборка полноценного видео (или быстрого тест-видео)
+    print("=== ЗАПУСК КОНВЕЙЕРА СБОРКИ (DATA -> AUDIO -> VIDEO) ===")
     audio_loader = AudioLoader()
     
-    print("[1/2] Генерация/Проверка озвучки...")
+    print("[1/2] Синтез озвучки с динамическими фразами...")
     for i, item in enumerate(blueprint):
         path_q_en = await audio_loader.get_audio(item["q_phrase_en"], "en-US-GuyNeural")
         path_q_ko = await audio_loader.get_audio(item["korean"], "ko-KR-InJoonNeural")
@@ -42,11 +68,14 @@ async def main():
         concatenate_audioclips([AudioFileClip(path_q_en), AudioFileClip(path_q_ko)]).write_audiofile(item["audio_question_path"])
         item["audio_answer_path"] = await audio_loader.get_audio(item["a_phrase_en"], "en-US-GuyNeural")
 
-    print("[2/2] Сборка финального видео...")
+    print("[2/2] Рендеринг видео (Добавлен микро-шум против бана + плавные переходы)...")
     renderer = MoviePyRenderer("templates/vertical/template.json")
     loop = asyncio.get_event_loop()
     await loop.run_in_executor(None, renderer.render_video, blueprint, "final_output.mp4")
-    print("=== КОНВЕЙЕР УСПЕШНО ЗАВЕРШЕН ===")
+    
+    # Автоматическая чистка мусора за собой после успешного рендеринга
+    auto_clean()
+    print("=== КОНВЕЙЕР УСПЕШНО ЗАВЕРШЕН! Файл: final_output.mp4 ===")
 
 if __name__ == "__main__":
     asyncio.run(main())

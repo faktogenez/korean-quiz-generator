@@ -2,15 +2,30 @@ import json
 import random
 
 class QuizEngine:
+    # Расширенная база шаблонов для максимальной динамики
     TEMPLATES = {
-        "question": ["What's the meaning of?", "What does this mean?", "What is it in English?"],
-        "answer": ["The correct answer is {answer}.", "It's {answer}.", "That means {answer}."],
+        "question": [
+            "What's the meaning of?", 
+            "What does this mean?", 
+            "What is it in English?",
+            "Can you translate this?",
+            "Guess the meaning:",
+            "Do you know this word?"
+        ],
+        "answer": [
+            "The correct answer is {answer}.", 
+            "It's {answer}.", 
+            "That means {answer}.",
+            "Correct: {answer}!",
+            "Perfect! It's {answer}."
+        ],
         "cta_last": [
             "Is it {opt1} or {opt2}? Write your answer in the comments!",
             "What do you think, is it {opt1} or {opt2}? Drop your guess below!",
             "Hard choice! Is it {opt1} or {opt2}? Tell me in the comments!",
             "Final round! {opt1} or {opt2}? What's your final answer? comment below!",
-            "No hints this time. Is it {opt1} or {opt2}? Let me know in the comments!"
+            "No hints this time. Is it {opt1} or {opt2}? Let me know in the comments!",
+            "Can you solve this? {opt1} or {opt2}? Write inside comments!"
         ]
     }
 
@@ -20,13 +35,11 @@ class QuizEngine:
         all_trans = [w.translation for w in words_base]
         total_cards = len(words_base)
 
-        # Динамически читаем палитру фонов прямо из конфигурационного файла
         try:
             with open(template_path, 'r', encoding='utf-8') as f:
                 config = json.load(f)
             palette = config.get("background_palette", ["#1e1e2e"])
         except Exception:
-            # Дефолтный бэкап-цвет на случай, если файл не прочитался
             palette = ["#1e1e2e"]
 
         for i, card in enumerate(words_base):
@@ -48,7 +61,6 @@ class QuizEngine:
             else:
                 a_phrase = random.choice(QuizEngine.TEMPLATES["answer"]).format(answer=correct_trans)
             
-            # Случайный выбор цвета из палитры, загруженной из JSON
             card_bg = random.choice(palette)
             
             blueprint.append({

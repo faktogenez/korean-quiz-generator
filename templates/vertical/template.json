@@ -34,9 +34,11 @@
     "size_phrase": 60,
     "size_korean": 200,
     "size_transcription": 60,
-    "size_option": 74
+    "size_option": 65,
+    "size_pulse_question_base": 350
   },
   "layout": {
+    "pulse_question_y": 1570,
     "y_watermark": 1800,
     "y_progress": 200,
     "y_phrase": 350,
@@ -53,8 +55,8 @@
       "y_space": 200,
       "width": 600,
       "height": 150,
-      "text_offset_x": 50,
-      "text_offset_y": 18,
+      "text_offset_x": 35,
+      "text_offset_y": 25,
       "border_width": 5
     }
   }
