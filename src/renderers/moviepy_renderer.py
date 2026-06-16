@@ -18,6 +18,7 @@ class MoviePyRenderer:
         card_clips = []
         width, height = self.template['dimensions']['width'], self.template['dimensions']['height']
         
+        # Сначала генерируем чистые клипы для каждой карточки
         for item in blueprint:
             # --- БЛОК ВОПРОСА ---
             audio_q = AudioFileClip(item['audio_question_path'])
@@ -38,15 +39,14 @@ class MoviePyRenderer:
             audio_a = AudioFileClip(item['audio_answer_path'])
             audio_a_seq = concatenate_audioclips([AudioFileClip("assets/ding.mp3"), audio_a])
             
-            ans_duration = audio_a_seq.duration + 2.0 # Добавляем 2 секунды тишины/паузы в конце слайда
+            ans_duration = audio_a_seq.duration + 2.0
             if item.get('is_last', False):
-                ans_duration += 8.0  # Суммарно 10 секунд на финальном квесте
+                ans_duration += 8.0  
             
             def make_a_frame(t, current_item=item):
                 pulse_size = None
                 if current_item.get('is_last', False):
                     base_s = self.template['typography']['size_pulse_question_base']
-                    # Пульсация знака от базового размера до +30 пикселей сверху
                     pulse_size = base_s + 15 * math.sin(t * 2 * math.pi * 1.0)
                 return np.array(self.animator.draw_card(
                     current_item, is_answer=True, correct_idx=current_item['correct_index'], 
@@ -59,44 +59,64 @@ class MoviePyRenderer:
             single_card_clip = concatenate_videoclips([clip_q, clip_a])
             card_clips.append(single_card_clip)
             
-        # --- СБОРКА С КИНЕМАТОГРАФИЧНЫМ ПЛАВНЫМ СВАЙПОМ (0.8 сек) ---
+        # --- СБОРКА С ЭФФЕКТОМ "КАРУСЕЛЬ" (СИНХРОННЫЙ СДВИГ) ---
         transition_duration = 0.8
-        animated_clips = [card_clips[0]]
         
-        for i in range(1, len(card_clips)):
-            prev_clip = animated_clips[-1]
-            next_clip = card_clips[i]
-            
-            start_transition_time = prev_clip.duration - transition_duration
-            prev_transition_segment = prev_clip.subclip(start_transition_time)
-            
-            # Функция нелинейного замедления (Ease-Out) для суперплавного движения
-            def ease_out_progress(t):
-                progress = t / transition_duration
-                return 1 - (1 - progress) ** 3  # Кубическое затухание скорости
+        # Функция-фабрика: создает индивидуальную логику движения для каждой карточки
+        def create_carousel_position(is_first, is_last, clip_duration):
+            def position(t):
+                # Функция нелинейного замедления (Ease-Out)
+                def ease_out(progress):
+                    return 1 - (1 - progress) ** 3
 
-            moving_prev = prev_transition_segment.set_position(
-                lambda t, w=width: (-int(w * ease_out_progress(t)), 0)
-            )
-            moving_next = next_clip.set_position(
-                lambda t, w=width: (max(int(w - (w * ease_out_progress(t))), 0), 0)
-            ).set_start(0)
+                # 1. ВЪЕЗД (справа налево в центр) — для всех карточек, кроме первой
+                if not is_first and t <= transition_duration:
+                    progress = t / transition_duration
+                    return (max(int(width - (width * ease_out(progress))), 0), 0)
+                
+                # 2. ВЫЕЗД (из центра налево за экран) — для всех карточек, кроме последней
+                time_until_end = clip_duration - t
+                if not is_last and time_until_end <= transition_duration:
+                    # Защита от мелких погрешностей времени (уход в минус)
+                    out_t = max(transition_duration - time_until_end, 0) 
+                    progress = out_t / transition_duration
+                    return (-int(width * ease_out(progress)), 0)
+                
+                # 3. СТАТИКА (карточка стоит по центру)
+                return (0, 0)
+            return position
+
+        final_layers = []
+        current_time = 0.0
+        num_clips = len(card_clips)
+
+        # Выкладываем карточки на таймлайн внахлест
+        for i, clip in enumerate(card_clips):
+            is_first = (i == 0)
+            is_last = (i == num_clips - 1)
             
-            transition_composite = CompositeVideoClip(
-                [moving_prev, moving_next], size=(width, height)
-            ).set_duration(transition_duration)
+            # Присваиваем клипу логику карусели, зная его полную длительность
+            pos_func = create_carousel_position(is_first, is_last, clip.duration)
             
-            animated_clips[-1] = prev_clip.subclip(0, start_transition_time)
-            animated_clips.append(transition_composite)
-            animated_clips.append(next_clip.subclip(transition_duration))
-            
-        final_video = concatenate_videoclips(animated_clips)
+            if is_first:
+                animated_clip = clip.set_start(0).set_position(pos_func)
+                final_layers.append(animated_clip)
+                current_time = clip.duration
+            else:
+                # Накладываем следующую карточку за 0.8 сек до конца предыдущей
+                start_transition = current_time - transition_duration
+                animated_clip = clip.set_start(start_transition).set_position(pos_func)
+                final_layers.append(animated_clip)
+                current_time = start_transition + clip.duration
+
+        # Собираем всё в один финальный видеоряд
+        final_video = CompositeVideoClip(final_layers, size=(width, height)).set_duration(current_time)
         video_duration = final_video.duration
         
         # --- НАЛОЖЕНИЕ МУЗЫКИ ---
         bg_music_path = "assets/background_music.mp3"
         if os.path.exists(bg_music_path):
-            print(f"[Музыка] Накладываю зацикленный трек...")
+            print(f"[Музыка] Накладываю зацикленный трек под длительность: {video_duration:.2f} сек.")
             bg_music = AudioFileClip(bg_music_path)
             bg_music = afx.audio_loop(bg_music, duration=video_duration)
             bg_music = bg_music.set_duration(video_duration).volumex(0.15)
