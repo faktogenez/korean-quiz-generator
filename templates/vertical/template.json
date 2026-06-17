@@ -43,12 +43,12 @@
     "y_progress": 200,
     "y_phrase": 350,
     "y_korean": 550,
-    "korean_stroke_width": 6,
+    "korean_stroke_width": 10,
     "y_transcription": 730,
     "timer": {
       "y": 875,
       "width": 600,
-      "height": 30
+      "height": 20
     },
     "options": {
       "y_start": 1000,

@@ -15,6 +15,13 @@ class MoviePyRenderer:
         self.animator = AnimationEngine(self.template)
 
     def render_video(self, blueprint, output_path):
+        # ==========================================
+        # 🎛️ ПУЛЬТ УПРАВЛЕНИЯ ЗВУКОМ
+        # ==========================================
+        bg_music_volume = 0.05  # Фоновая музыка (0.05 = 5% громкости)
+        whoosh_volume = 0.80    # Звук свайпа "Вжух" (0.80 = 80% громкости)
+        # ==========================================
+        
         card_clips = []
         width, height = self.template['dimensions']['width'], self.template['dimensions']['height']
         
@@ -62,40 +69,35 @@ class MoviePyRenderer:
         # --- СБОРКА С ЭФФЕКТОМ "КАРУСЕЛЬ" (СИНХРОННЫЙ СДВИГ) ---
         transition_duration = 0.8
         
-        # Функция-фабрика: создает индивидуальную логику движения для каждой карточки
         def create_carousel_position(is_first, is_last, clip_duration):
             def position(t):
-                # Функция нелинейного замедления (Ease-Out)
                 def ease_out(progress):
                     return 1 - (1 - progress) ** 3
 
-                # 1. ВЪЕЗД (справа налево в центр) — для всех карточек, кроме первой
                 if not is_first and t <= transition_duration:
                     progress = t / transition_duration
                     return (max(int(width - (width * ease_out(progress))), 0), 0)
                 
-                # 2. ВЫЕЗД (из центра налево за экран) — для всех карточек, кроме последней
                 time_until_end = clip_duration - t
                 if not is_last and time_until_end <= transition_duration:
-                    # Защита от мелких погрешностей времени (уход в минус)
                     out_t = max(transition_duration - time_until_end, 0) 
                     progress = out_t / transition_duration
                     return (-int(width * ease_out(progress)), 0)
                 
-                # 3. СТАТИКА (карточка стоит по центру)
                 return (0, 0)
             return position
 
         final_layers = []
+        transition_audio_layers = [] 
         current_time = 0.0
         num_clips = len(card_clips)
+        whoosh_path = "assets/whoosh.mp3"
 
         # Выкладываем карточки на таймлайн внахлест
         for i, clip in enumerate(card_clips):
             is_first = (i == 0)
             is_last = (i == num_clips - 1)
             
-            # Присваиваем клипу логику карусели, зная его полную длительность
             pos_func = create_carousel_position(is_first, is_last, clip.duration)
             
             if is_first:
@@ -103,25 +105,42 @@ class MoviePyRenderer:
                 final_layers.append(animated_clip)
                 current_time = clip.duration
             else:
-                # Накладываем следующую карточку за 0.8 сек до конца предыдущей
                 start_transition = current_time - transition_duration
                 animated_clip = clip.set_start(start_transition).set_position(pos_func)
                 final_layers.append(animated_clip)
+                
+                # --- ДОБАВЛЯЕМ ЗВУК СВАЙПА С НАШЕЙ ГРОМКОСТЬЮ ---
+                if os.path.exists(whoosh_path):
+                    whoosh_sfx = AudioFileClip(whoosh_path).set_start(start_transition).volumex(whoosh_volume)
+                    transition_audio_layers.append(whoosh_sfx)
+                
                 current_time = start_transition + clip.duration
 
-        # Собираем всё в один финальный видеоряд
         final_video = CompositeVideoClip(final_layers, size=(width, height)).set_duration(current_time)
         video_duration = final_video.duration
         
-        # --- НАЛОЖЕНИЕ МУЗЫКИ ---
+        # --- ФИНАЛЬНЫЙ МИКС АУДИО (Голос + Вжухи + Музыка) ---
+        master_audio_tracks = [final_video.audio]
+        master_audio_tracks.extend(transition_audio_layers)
+
         bg_music_path = "assets/background_music.mp3"
         if os.path.exists(bg_music_path):
-            print(f"[Музыка] Накладываю зацикленный трек под длительность: {video_duration:.2f} сек.")
+            print(f"[Музыка] Накладываю зацикленный трек (громкость: {int(bg_music_volume * 100)}%)...")
             bg_music = AudioFileClip(bg_music_path)
             bg_music = afx.audio_loop(bg_music, duration=video_duration)
-            bg_music = bg_music.set_duration(video_duration).volumex(0.15)
+            bg_music = bg_music.set_duration(video_duration).volumex(bg_music_volume)
             bg_music = afx.audio_fadeout(bg_music, 3.0)
             
-            final_video = final_video.set_audio(CompositeAudioClip([final_video.audio, bg_music]))
+            master_audio_tracks.append(bg_music)
+            
+        final_video = final_video.set_audio(CompositeAudioClip(master_audio_tracks))
 
-        final_video.write_videofile(output_path, fps=24, codec="libx264", audio_codec="aac")
+        # --- ТУРБО-РЕНДЕР С МАКСИМАЛЬНОЙ СКОРОСТЬЮ ---
+        final_video.write_videofile(
+            output_path, 
+            fps=24, 
+            codec="libx264", 
+            audio_codec="aac", 
+            preset="ultrafast",
+            threads=16
+        )
