@@ -1,0 +1,12 @@
+[
+  {"topic": "colors", "word": "빨간색", "transcription": "ppal-gan-saek", "translation": "Red"},
+  {"topic": "colors", "word": "주황색", "transcription": "ju-hwang-saek", "translation": "Orange"},
+  {"topic": "colors", "word": "노란색", "transcription": "no-ran-saek", "translation": "Yellow"},
+  {"topic": "colors", "word": "초록색", "transcription": "cho-rok-saek", "translation": "Green"},
+  {"topic": "colors", "word": "파란색", "transcription": "pa-ran-saek", "translation": "Blue"},
+  {"topic": "colors", "word": "남색", "transcription": "nam-saek", "translation": "Indigo"},
+  {"topic": "colors", "word": "보라색", "transcription": "bo-ra-saek", "translation": "Purple"},
+  {"topic": "colors", "word": "분홍색", "transcription": "bun-hong-saek", "translation": "Pink"},
+  {"topic": "colors", "word": "갈색", "transcription": "gal-saek", "translation": "Brown"},
+  {"topic": "colors", "word": "검정색", "transcription": "geom-jeong-saek", "translation": "Black"}
+]

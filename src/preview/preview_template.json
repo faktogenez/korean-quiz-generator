@@ -1,0 +1,137 @@
+{
+    "__техническая_информация": "Профессиональный UI/UX пресет с динамическими настройками изображений.",
+    
+    "dimensions": {
+        "width": 1080,
+        "height": 1920
+    },
+    
+    "assets": {
+        "font_eng_path": "assets/fonts/Montserrat-Black.ttf",
+        "font_kor_path": "assets/fonts/MalgunGothic-Bold.ttf",
+        "font_roboto_path": "assets/fonts/ROBOTO-REGULAR.TTF",
+        "bg_music_path": "assets/audio/background_ambient.mp3",
+        "flag_path": "assets/images/korea.png"
+    },
+
+    "colors": {
+        "bg_mode": "cycle",
+        "fixed_bg_hex": "#EBF5EE",
+        "pastel_colors": [
+            "#EBF5EE",
+            "#FCE4EC",
+            "#E3F2FD",
+            "#F3E5F5",
+            "#FFFDE7",
+            "#FBE9E7",
+            "#E0F2F1"
+        ],
+        "phrase_text_hex": "#2B2D42",
+        "badge_bg_hex": "#FFD166",
+        "badge_text_hex": "#2B2D42",
+        "counter_text_hex": "#2B2D42"
+    },
+
+    "typography": {
+        "phrase_font_size": 75,
+        "badge_font_size": 200,
+        "__комментарий_размера": "Твой увеличенный размер для корейского слова — утвержден!",
+        "counter_font_size": 320
+    },
+    
+    "layout": {
+        "phrase_y_fraction": 0.30,
+        "badge_y_fraction": 0.44,
+        "__комментарий_позиции": "Твоя идеальная центровка по оси Y — утверждена!",
+        "counter_y_fraction": 0.70,
+        "badge_rotation": -5
+    },
+
+    "flag_settings": {
+        "x_fraction": 0.5,
+        "y_fraction": 0.10,
+        "max_width": 180,
+        "scale": 1.5
+    },
+
+    "timings": {
+        "phrase_audio_start": 0.2
+    },
+
+    "audio_settings": {
+        "voice_volume": 1.0,
+        "bg_music_volume": 0.15
+    },
+
+    "features_toggles": {
+        "show_flag": true,
+        "show_counter": true,
+        "play_phrase_voiceover": true,
+        "show_background_music": false
+    },
+    
+    "text": {
+        "topic_prefix": ""
+    },
+    
+    "catchy_phrases": [
+    "99% CAN'T TRANSLATE THIS! PROVE IT!",
+    "WHAT DOES THIS MEAN? GUESS NOW!",
+    "ONLY 1% KNOW THIS WORD! ARE YOU ONE?",
+    "99% FAIL THIS KOREAN TEST! LOCK IN!",
+    "CAN YOU ACE THIS? YOUR TURN!",
+    "ONLY 1% GET 5/5! READY? GO!",
+    "MOST PEOPLE GET THIS WRONG! CAN YOU?",
+    "DO YOU KNOW THIS WORD? TEST YOURSELF!",
+    "95% OF LEARNERS FAIL HERE! CHOOSE NOW!",
+    "IS YOUR KOREAN FLUENT? PROVE IT!",
+    "EVERYONE MAKES THIS MISTAKE! ARE YOU READY?",
+    "NATIVES KNOW THIS INSTANTLY! DO YOU?",
+    "CAN YOU GUESS THE MEANING? START NOW!",
+    "TEST YOUR KOREAN VOCABULARY! LET'S GO!",
+    "ONLY EXPERTS GET THIS RIGHT! TAKE THE RISK!",
+    "99% OF STUDENTS STRUGGLE HERE! FOCUS UP!",
+    "DO YOU REALLY KNOW KOREAN? PROVE THEM WRONG!",
+    "HARDER THAN IT LOOKS! GUESS CAREFULLY!",
+    "CAN YOU SCORE 100%? SHOW YOUR SKILLS!",
+    "A REAL KOREAN BRAINTEASER! THINK FAST!",
+    "99% CHOOSE THE WRONG ANSWER! BE THE 1%!",
+    "DOES YOUR KOREAN SOUND NATURAL? FIND OUT!",
+    "CAN YOU BEAT THIS QUIZ? TAKE A GUESS!",
+    "ONLY TRUE FANS KNOW THIS! ARE YOU READY?",
+    "90% FAIL ON THE FIRST TRY! DON'T QUIT!"
+],
+
+    "quiz_layout": {
+        "show_ui_frame": true,
+        "frame_padding": 45,
+        "frame_color_hex": "#2B2D42",
+        "frame_thickness": 5,
+        "frame_radius": 40,
+        
+        "show_quiz_header": true,
+        "header_line2": {
+            "text": "TESTS",
+            "font_size": 55,
+            "color_hex": "#2B2D42",
+            "y_fraction": 0.16,
+            "font_key": "font_eng_path"
+        },
+        "header_line1": {
+            "text": "in Korean",
+            "font_size": 40,
+            "color_hex": "#2B2D42",
+            "y_fraction": 0.19,
+            "font_key": "font_roboto_path"
+        },
+        
+        "channel_footer": {
+            "show": true,
+            "text": "@korean.step_by",
+            "font_size": 42,
+            "color_hex": "#2B2D42",
+            "y_fraction": 0.90,
+            "font_key": "font_roboto_path"
+        }
+    }
+}
